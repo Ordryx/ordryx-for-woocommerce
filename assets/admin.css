@@ -1,0 +1,82 @@
+/* The Ordryx tab in WooCommerce › Settings. WordPress's own admin colours,
+   and Ordryx's dark well for its side of a pairing and the code. */
+/* WooCommerce's settings form is empty on this tab (it has no settings: the
+   tab's own forms come after it), so only its tabs show; the content below
+   takes the form's grey and its 30px gutter, so there's no band between. */
+body.woocommerce_page_wc-settings #mainform { padding-bottom: 0; }
+body.woocommerce_page_wc-settings #mainform nav { margin-bottom: 0; }
+body.woocommerce_page_wc-settings #mainform p.submit { display: none; }
+.ordryx { background: #f0f0f1; padding: 24px 30px 40px; }
+.ordryx > * { max-width: 1060px; box-sizing: border-box; }
+.ordryx > .notice { margin: 0 0 18px; }
+.ordryx-card { background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; padding: 20px 24px; margin: 0 0 18px; }
+.ordryx-card h2 { margin-top: 0; font-size: 1.4em; font-weight: 400; }
+.ordryx-card h3 { font-size: 1em; }
+.ordryx-brand { display: flex; align-items: center; gap: 10px; font-weight: 600; margin-bottom: 12px; }
+.ordryx-mark { width: 28px; height: 28px; border-radius: 6px; background: #161412; color: #f4a640; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; }
+.ordryx-muted { color: #50575e; }
+.ordryx-label { display: block; font-weight: 600; margin-bottom: 6px; }
+.ordryx-code { width: 100%; max-width: 360px; height: 64px; border-radius: 6px; background: #161412; color: #f4a640; border: 1px solid #8c8f94; font: 600 30px/1 ui-monospace, Menlo, Consolas, monospace; letter-spacing: 0.16em; text-align: center; text-transform: uppercase; }
+.ordryx-code:focus { outline: 2px solid #2271b1; outline-offset: 2px; color: #f4a640; background: #161412; }
+.ordryx-foot { border-top: 1px solid #dcdcde; padding-top: 12px; color: #50575e; }
+.ordryx-sides { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0; }
+.ordryx-side { flex: 1 1 260px; border: 1px solid #dcdcde; border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+.ordryx-side strong { font-size: 1.2em; }
+.ordryx-side code { background: none; padding: 0; overflow-wrap: anywhere; }
+.ordryx-side ul { margin: 6px 0 0; }
+.ordryx-dark { background: #161412; border-color: #2a2723; color: #eee8dc; }
+.ordryx-dark code { color: #f4a640; }
+.ordryx-over { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: #50575e; }
+.ordryx-dark .ordryx-over { color: #a89f8e; }
+.ordryx-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0; }
+.ordryx .button { min-height: 40px; line-height: 38px; padding: 0 18px; }
+.ordryx-banner { background: #161412; color: #f7f3ea; border-radius: 8px; padding: 18px 22px; margin: 0 0 18px; display: flex; flex-wrap: wrap; gap: 14px 20px; align-items: center; }
+.ordryx-banner-text { flex: 1 1 340px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ordryx-banner strong { font-size: 1.3em; }
+.ordryx-banner code { background: none; padding: 0; color: #cfc7b8; overflow-wrap: anywhere; }
+.ordryx-banner-do { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.ordryx-banner-do form { margin: 0; }
+.ordryx-banner a { color: #f4a640; min-height: 44px; display: inline-flex; align-items: center; padding: 0 8px; }
+.ordryx .button.ordryx-on-dark { background: #25231f; border-color: #46423a; color: #eee8dc; min-height: 44px; }
+.ordryx .button.ordryx-on-dark:hover, .ordryx .button.ordryx-on-dark:focus { background: #2f2c27; color: #f7f3ea; }
+.ordryx .button.ordryx-on-dark:disabled { opacity: 0.6; }
+.ordryx .button.ordryx-strong { color: #f4a640; font-weight: 600; background: transparent; }
+.ordryx-grid { display: flex; flex-wrap: wrap; gap: 0 20px; align-items: flex-start; }
+.ordryx-main { flex: 999 1 560px; min-width: 0; }
+.ordryx-aside { flex: 1 1 300px; min-width: 0; }
+.ordryx-flows { padding: 20px 0 0; }
+.ordryx-flows > h2, .ordryx-flows > p { padding: 0 24px; }
+.ordryx-flow { border-top: 1px solid #dcdcde; padding: 16px 24px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: flex-start; }
+.ordryx-flows.is-paused .ordryx-flow, .ordryx-flow.is-out { background: #f6f7f7; }
+.ordryx-flow h3 { margin: 0 0 6px; font-size: 1.05em; }
+.ordryx-flow p { margin: 0 0 8px; }
+.ordryx-flow-body { flex: 1 1 320px; min-width: 0; }
+.ordryx-way { flex: 0 0 64px; text-align: center; font: 600 12px ui-monospace, Menlo, Consolas, monospace; padding: 4px 8px; border-radius: 999px; box-sizing: border-box; }
+.ordryx-flow.is-in .ordryx-way { background: #edfaef; color: #007017; }
+.ordryx-flow.is-out .ordryx-way { background: #f0f6fc; color: #135e96; }
+.ordryx-flow.is-never .ordryx-way { background: #fcf0f1; color: #b32d2e; }
+.ordryx-side-word { margin-left: auto; font-weight: 600; font-size: 13px; color: #3c434a; }
+.ordryx-flow.is-out .ordryx-side-word { color: #50575e; }
+.ordryx-flow.is-never .ordryx-side-word { color: #b32d2e; }
+.ordryx-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 4px 0 10px; }
+.ordryx-chips form { margin: 0; }
+.ordryx-chip { min-height: 44px; padding: 0 14px; border-radius: 999px; font-size: 13px; border: 1px solid #c3c4c7; background: #fff; color: #3c434a; display: inline-flex; align-items: center; cursor: pointer; }
+.ordryx-chip[aria-pressed="true"], .ordryx-chip[data-on="1"] { border-color: #2271b1; background: #f0f6fc; color: #135e96; }
+.ordryx-chip[aria-disabled="true"] { cursor: default; opacity: 0.75; }
+.ordryx-chip:focus-visible { outline: 2px solid #2271b1; outline-offset: 2px; }
+.ordryx-recent { margin: 0; padding: 0; list-style: none; }
+.ordryx-recent li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 2px 10px; margin: 0 0 12px; }
+.ordryx-recent b { font: 600 12px ui-monospace, Menlo, Consolas, monospace; color: #50575e; padding-top: 2px; }
+.ordryx-recent b.is-synced { color: #007017; }
+.ordryx-recent b.is-sync_failed { color: #b32d2e; }
+.ordryx-recent span { overflow-wrap: anywhere; }
+.ordryx-recent time { grid-column: 2; font: 12px ui-monospace, Menlo, Consolas, monospace; color: #50575e; }
+.ordryx-status { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; }
+.ordryx-status.is-on { color: #86dcc2; }
+.ordryx-status.is-paused { color: #f4b860; }
+.ordryx-checks { margin: 0; padding: 0; list-style: none; }
+.ordryx-checks li { display: flex; gap: 10px; }
+.ordryx-checks b { flex: none; width: 40px; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.ordryx-checks .is-ok { color: #007017; }
+.ordryx-checks .is-bad { color: #b32d2e; }
+.ordryx .button.ordryx-danger { color: #b32d2e; border-color: #b32d2e; }

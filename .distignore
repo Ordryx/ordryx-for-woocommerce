@@ -1,0 +1,13 @@
+/.distignore
+/.gitignore
+/composer.json
+/composer.lock
+/phpcs.xml.dist
+/phpstan.neon.dist
+/phpunit.xml.dist
+/tests
+/vendor
+/.phpunit.result.cache
+.DS_Store
+/README.md
+/SECURITY.md
