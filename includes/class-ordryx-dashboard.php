@@ -365,7 +365,7 @@ class Ordryx_Dashboard {
 
 		// What never goes.
 		self::row_start( 'never', __( 'Billing addresses and phones, and accounts', 'ordryx-for-woocommerce' ) );
-		echo '<p>' . esc_html__( 'Ordryx keeps who bought each order (the customer\'s name and email) and the ship-to of an order waiting to ship (its name, address and phone), for its label: the ship-to until 90 days after the order is done. Once the store is disconnected, both go, at once for orders still waiting to ship and 29 days later for the rest. Never the billing address or billing phone, nor a customer\'s account.', 'ordryx-for-woocommerce' ) . '</p>';
+		echo '<p>' . esc_html__( 'Ordryx keeps who bought each order (the customer\'s name and email, and what they typed for a line) and the ship-to of an order waiting to ship (its name, address and phone), for its label: the ship-to until 90 days after the order is done. Once the store is disconnected, they go, at once for orders still waiting to ship and 29 days later for the rest. Never the billing address or billing phone, nor a customer\'s account.', 'ordryx-for-woocommerce' ) . '</p>';
 		self::row_end( __( 'Never kept', 'ordryx-for-woocommerce' ) );
 		echo '</section>';
 	}

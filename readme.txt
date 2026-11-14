@@ -4,7 +4,7 @@ Tags: inventory, manufacturing, orders, stock, production
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.5.7
+Stable tag: 0.5.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,7 +32,7 @@ This plugin connects to **Ordryx's server, account.ordryx.com**, run by Ordryx L
 * **When an order changes:** a signed notice that something changed, at most once a minute. It names no order and holds no order details. While the store is paused, it first asks your Ordryx whether it was resumed (the same ask the tab makes, naming no one), at most every 15 minutes.
 * **When you open the Ordryx tab, and once a day:** a signed check of where the connection stands. While connected, opening the tab also asks your Ordryx what flows (at most every 30 seconds); the answer comes back through the same server, which keeps none of it.
 * **When an order is shipped from your Ordryx:** Ordryx's server sends this site's `/?rest_route=/ordryx/v1/shipped` the order's id, its carrier, tracking number and link, and who shipped it, as your Ordryx signed it (the plugin checks that signature against your Ordryx's own key, given at pairing, so Ordryx's server alone can't mark an order shipped). The server passes it on and keeps none of it.
-* **When WooCommerce erases a customer's personal data from orders** (Tools › Erase Personal Data with "Remove personal data from orders on request" on, or its retention settings): the ids of those orders, so your Ordryx forgets their customer's name, email and ship-to at once. Nothing else is sent, and Ordryx's server keeps none of it.
+* **When WooCommerce erases a customer's personal data from orders** (Tools › Erase Personal Data with "Remove personal data from orders on request" on, or its retention settings): the ids of those orders, so your Ordryx forgets their customer's name, email and ship-to, and what they typed for a line, at once. Nothing else is sent, and Ordryx's server keeps none of it.
 * **When you press Sync now, Pause, Resume, Disconnect or a sales channel:** a signed ask for your Ordryx, with the name of the person who pressed it and whether they're an Administrator.
 * **When you deactivate or delete the plugin:** a signed notice of that, with the name of the person who did it. Deleting it first sends, once more, the ids of orders erased here that your Ordryx hasn't taken yet.
 * **When you cancel connecting:** a signed notice of that, naming no one.
@@ -48,10 +48,11 @@ What your Ordryx reads with the key, and keeps:
 
 * Orders: their number, status, dates and where each was placed (checkout, typed in, an app), with their lines, prices, taxes, shipping, fees and refunds. Products: their names, SKUs, prices, stock and variations. The store's name, its order statuses and WooCommerce's version.
 * Who bought each order: the billing name and email only, kept with the order until the store is disconnected (see below), and forgotten at once when WooCommerce erases them from it.
+* What the customer typed or chose for each line, as WooCommerce's own order screen shows it under the line: a product add-on's field (the text to engrave, say) and a variation's options, never the hidden details WooCommerce and other plugins keep there. Kept with the order's lines, for making and packing it, and forgotten with the customer's name and email.
 * For each order waiting to ship, the ship-to name, company, address and phone, for its label: your Ordryx gives them to the carrier or label service you buy the label from. Cleared 90 days after the order is done, or after 90 days with nothing changed on one still open (your Ordryx asks the store for it again, so one the store still has comes back), or at once when WooCommerce erases the customer's personal data from the order.
 * Never the billing address or billing phone, and never customer accounts: the key could read them, but your Ordryx never asks for them.
 
-Your Ordryx uses them to plan what to make, take stock when orders ship, buy labels and report your sales. An erasure made while the store isn't connected is sent once it's connected again. If the store is disconnected (Disconnect here or in Ordryx, deleting the plugin, or connecting the store to another Ordryx), your Ordryx keeps the orders it has read, as your shop's sales, but their customer details go: the ship-to and the customer's name and email, at once for orders still waiting to ship, 29 days later for the rest, unless the store is connected to it again first. Your Ordryx's backups and off-site copies made before then keep them until they're pruned (14 backups and 30 off-site copies are kept, unless you chose other numbers).
+Your Ordryx uses them to plan what to make, take stock when orders ship, buy labels and report your sales. An erasure made while the store isn't connected is sent once it's connected again. If the store is disconnected (Disconnect here or in Ordryx, deleting the plugin, or connecting the store to another Ordryx), your Ordryx keeps the orders it has read, as your shop's sales, but their customer details go: the ship-to, the customer's name and email and what they typed for a line, at once for orders still waiting to ship, 29 days later for the rest, unless the store is connected to it again first. Your Ordryx's backups and off-site copies made before then keep them until they're pruned (14 backups and 30 off-site copies are kept, unless you chose other numbers).
 
 What Ordryx's server keeps: no order data and no key. For each connected store, its address and name, which Ordryx it's connected to, who connected it and when, that they agreed to Ordryx's terms (the version, when and who), the number WooCommerce gave Ordryx's key (never the key itself), and the store's secret for signing the plugin's notices, encrypted. Deactivating or deleting the plugin is kept, with who did it, until your Ordryx has heard of it, and a month more. A store's record goes a month after it's disconnected. When its Ordryx is removed from its Ordryx account, the record goes a month after the plugin's next check (which hears so and deletes Ordryx's key), or a year after the removal if the plugin never checks. A connection never finished goes a day after it ran out. The agreement to Ordryx's terms stays after the record goes, as the version and when (so the store is asked again only when the terms change), but who agreed is kept only as long as the store's record, or until the Ordryx account it was connected through is deleted.
 
@@ -93,6 +94,9 @@ The copy's Ordryx tab says it looks like a copy. There's nothing to do. If you'l
 A copy that keeps the live store's own address, and that WordPress still calls a live site (its environment type), can't be told apart: one on your computer reached through a hosts-file entry, say. Clear its connection first with WP-CLI, `wp option delete ordryx_state ordryx_secret`. If the store itself moved to a new address, its Ordryx tab says what to do.
 
 == Changelog ==
+
+= 0.5.8 =
+* The readme, the Ordryx tab and What flows now say that Ordryx keeps what a customer typed or chose for an order line (an engraving's text, say), and that it goes with their name and email: at an erasure and when the store is disconnected. Ordryx has kept it since 0.0.253; nothing else changed.
 
 = 0.5.7 =
 * The plugin's source is public, release by release, at https://github.com/Ordryx/ordryx-for-woocommerce (issues welcome; security problems to security@ordryx.com).

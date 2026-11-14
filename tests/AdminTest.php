@@ -66,6 +66,9 @@ class AdminTest extends Ordryx_Test_Case {
 		// (a disconnect keeps the orders, not their customers: Ordryx 0.0.210)
 		$this->assertStringContainsString( 'at once for orders still waiting to ship, 29 days later for the rest', $html );
 		$this->assertStringNotContainsString( 'phone numbers', $html );
+		// (what the customer typed for a line is kept too, and goes with them)
+		$this->assertStringContainsString( 'What the customer typed or chose for each line', $html );
+		$this->assertStringContainsString( 'and what they typed for a line go', $html );
 	}
 
 	public function test_only_an_administrator_changes_the_connection() {

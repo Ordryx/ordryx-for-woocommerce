@@ -98,7 +98,7 @@ class DashboardTest extends Ordryx_Test_Case {
 		$html = $this->printed( array( 'Ordryx_Admin', 'render' ) );
 		$this->assertStringContainsString( 'Billing addresses and phones, and accounts', $html );
 		$this->assertStringContainsString( 'waiting to ship (its name, address and phone)', $html );
-		$this->assertStringContainsString( 'Once the store is disconnected, both go, at once for orders still waiting to ship', $html );
+		$this->assertStringContainsString( 'Once the store is disconnected, they go, at once for orders still waiting to ship', $html );
 		$this->assertStringContainsString( 'Never the billing address or billing phone', $html );
 		$this->assertStringNotContainsString( 'phone number', $html );
 	}

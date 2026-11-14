@@ -10,8 +10,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Ordryx never asks for an order's meta_data (it may hold other plugins'
- * customer data). The processors keep their fee there, so the plugin reads
+ * Ordryx never asks for an order's own meta_data (it may hold other plugins'
+ * customer data; a line's comes with its line, as WooCommerce's order screen
+ * shows it). The processors keep their fee there, so the plugin reads
  * the few keys it knows and adds only those, as
  * [{processor, amount, currency}]: empty when the order has none it knows.
  * A fee in another currency than the order's is given as it is.
