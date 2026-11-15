@@ -4,7 +4,7 @@ Tags: inventory, manufacturing, orders, stock, production
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.5.8
+Stable tag: 0.5.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Connects your store to Ordryx: its orders flow in to plan, make and ship them, a
 
 Ordryx is inventory and production for small makers: what's on the shelf, what to make next, and what to ship. This plugin connects a WooCommerce store to the shop's own Ordryx with one code. Your Ordryx is your shop's own: it runs on a computer of yours, or on Ordryx's servers when Ordryx hosts it for you.
 
-* **One code, then WooCommerce's own Allow screen.** Make a code in Ordryx (Sales › Sales channels › Add a store), type it under WooCommerce › Settings › Ordryx, tick that you agree to Ordryx's terms of service and privacy policy, check both names, press Connect and allow a **read-only** key.
+* **One code, then WooCommerce's own Allow screen.** Get a code in Ordryx (Sales › Sales channels › WooCommerce), type it under WooCommerce › Settings › Ordryx, tick that you agree to Ordryx's terms of service and privacy policy, check both names, press Connect and allow a **read-only** key.
 * **Orders come in by themselves.** Once your Ordryx has run the store's first sync (Sync now on the store's page in Ordryx, once its starting stock is set) and "Sync orders automatically" is on there (Settings › WooCommerce), it reads the store as often as you chose, and usually within a couple of minutes of an order changing: the plugin tells Ordryx's server that something changed, a notice that carries no order details at all. Until then, orders come in when someone presses Sync now (the first time, in Ordryx).
 * **Payment processors' fees, and paid.** Ordryx's key sees two extra fields on each order: the fee WooPayments or Stripe charged, so Ordryx can show what each sale really made, and whether WooCommerce counts the order paid (a status another plugin adds to WooCommerce's paid ones, like "Packing", counts too).
 * **Shipped from Ordryx.** An order you ship in Ordryx is marked Completed here, with its tracking (in WooCommerce's Fulfillments, Shipment Tracking or Advanced Shipment Tracking if you use one, else a note to the customer) and a private note saying who shipped it. Only a tracking number (letters and digits, its spaces taken out: at most 6 letters, or one with a dash, which goes only between digits), a carrier's plain name and a link to that carrier's own tracking page reach the customer. WooCommerce then does what it does for any order marked Completed: it emails the customer (and for the note, when tracking goes there), and does more for an order not yet paid (see the FAQ). This plugin writes it, never Ordryx's key, which stays read-only.
@@ -94,6 +94,9 @@ The copy's Ordryx tab says it looks like a copy. There's nothing to do. If you'l
 A copy that keeps the live store's own address, and that WordPress still calls a live site (its environment type), can't be told apart: one on your computer reached through a hosts-file entry, say. Clear its connection first with WP-CLI, `wp option delete ordryx_state ordryx_secret`. If the store itself moved to a new address, its Ordryx tab says what to do.
 
 == Changelog ==
+
+= 0.5.9 =
+* A code that's wrong, has run out or was already used is said as such, and the tab says where to get a new one in Ordryx (Sales › Sales channels › WooCommerce).
 
 = 0.5.8 =
 * The readme, the Ordryx tab and What flows now say that Ordryx keeps what a customer typed or chose for an order line (an engraving's text, say), and that it goes with their name and email: at an erasure and when the store is disconnected. Ordryx has kept it since 0.0.253; nothing else changed.

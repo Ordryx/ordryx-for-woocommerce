@@ -217,7 +217,7 @@ class AdminTest extends Ordryx_Test_Case {
 		$this->assertStringNotContainsString( 'script', $html );
 		$_GET['ordryx'] = 'code';
 		$html           = $this->printed( array( 'Ordryx_Admin', 'render' ) );
-		$this->assertStringContainsString( 'That code has run out', $html );
+		$this->assertStringContainsString( 'That code isn&#039;t right, or has run out or been used', $html );
 	}
 
 	public function test_a_shop_manager_sees_where_it_stands_without_the_forms() {

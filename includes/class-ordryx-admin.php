@@ -408,7 +408,7 @@ class Ordryx_Admin {
 			case 'format':
 				return __( 'A code is eight letters and numbers, like R7WT-4HQN.', 'ordryx-for-woocommerce' );
 			case 'code':
-				return __( 'That code has run out. Make a new one in Ordryx (Sales › Sales channels › Add a store) and type it here. Codes last 10 minutes and work once.', 'ordryx-for-woocommerce' );
+				return __( 'That code isn\'t right, or has run out or been used. Get a new one in Ordryx (Sales › Sales channels › WooCommerce) and type it here. Codes last 10 minutes and work once.', 'ordryx-for-woocommerce' );
 			case 'agree':
 				return __( 'Tick the box to agree to Ordryx\'s terms of service and privacy policy, then press Continue.', 'ordryx-for-woocommerce' );
 			case 'move_agree':
@@ -608,7 +608,7 @@ class Ordryx_Admin {
 		echo '<p class="ordryx-muted">';
 		printf(
 			/* translators: %s: an example code */
-			esc_html__( 'It\'s on the Connect WooCommerce page in Ordryx (Sales › Sales channels › Add a store). It looks like %s.', 'ordryx-for-woocommerce' ),
+			esc_html__( 'Get it in Ordryx: Sales › Sales channels › WooCommerce, Get a code. It looks like %s.', 'ordryx-for-woocommerce' ),
 			'<code>R7WT-4HQN</code>'
 		);
 		echo '</p>';

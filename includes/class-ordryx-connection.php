@@ -20,7 +20,7 @@ class Ordryx_Connection {
 	const NUDGE_HOOK  = 'ordryx_nudge'; // (Ordryx_Nudge's)
 	const GROUP       = 'ordryx';
 	const PAIRING_TTL = 900;
-	const CODE        = '/^[A-Z0-9]{4}-[A-Z0-9]{4}$/';
+	const CODE        = '/^[A-Z0-9]{4}-[A-Z0-9]{4}$/D';
 
 	/**
 	 * Errors the account answers a pairing with (anything else: "failed"):
