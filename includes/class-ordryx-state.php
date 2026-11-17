@@ -1,7 +1,9 @@
 <?php
 /**
  * What the plugin keeps: one option for where the connection stands and one
- * for the site secret, neither loaded on every page.
+ * for the site secret, neither loaded on every page. The secret is sealed
+ * with a key from wp-config.php, so a copy of the database alone (a leaked
+ * backup, a read through another plugin's hole) can't sign for the store.
  *
  * @package Ordryx
  */
@@ -50,6 +52,16 @@ class Ordryx_State {
 	 * deleted (Ordryx_Connection::delete_keys).
 	 */
 	const KEY_LEFT = 'ordryx_key_left';
+
+	/**
+	 * A sealed secret's mark: "s1." then base64 of the nonce and the box.
+	 */
+	const SEALED = 's1.';
+
+	/**
+	 * What wp-config-sample.php puts where a key should be.
+	 */
+	const SAMPLE_KEY = 'put your unique phrase here';
 
 	/**
 	 * Ids the account hands out: a store, a pairing.
@@ -160,7 +172,9 @@ class Ordryx_State {
 	}
 
 	/**
-	 * The site secret (raw bytes), or "" when there's none.
+	 * The site secret (raw bytes), or "" when there's none or it can't be
+	 * opened here (secret_lost). One kept in the clear (0.5.9 and earlier) is
+	 * sealed the first time it's read where it can be.
 	 *
 	 * @return string
 	 */
@@ -169,8 +183,101 @@ class Ordryx_State {
 		if ( ! is_string( $kept ) || '' === $kept ) {
 			return '';
 		}
-		$raw = base64_decode( $kept, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- the secret as the account gave it.
-		return ( false !== $raw && 32 === strlen( $raw ) ) ? $raw : '';
+		if ( 0 === strpos( $kept, self::SEALED ) ) {
+			return self::open( substr( $kept, strlen( self::SEALED ) ) );
+		}
+		$raw = base64_decode( $kept, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- a secret kept before 0.5.10.
+		if ( false === $raw || 32 !== strlen( $raw ) ) {
+			return '';
+		}
+		$sealed = self::seal( $raw );
+		if ( '' !== $sealed ) {
+			update_option( self::SECRET, $sealed, false );
+		}
+		return $raw;
+	}
+
+	/**
+	 * Whether a secret is kept that can't be opened here: wp-config.php's
+	 * keys changed since it was sealed (or ORDRYX_SECRET_KEY did), so nothing
+	 * can be signed until the store connects again.
+	 *
+	 * @return bool
+	 */
+	public static function secret_lost() {
+		$kept = get_option( self::SECRET, '' );
+		return is_string( $kept ) && 0 === strpos( $kept, self::SEALED ) && '' === self::secret();
+	}
+
+	/**
+	 * Whether a secret can be kept sealed here (wp-config.php has keys of its
+	 * own, and libsodium is there: it is in every WordPress since 5.2).
+	 *
+	 * @return bool
+	 */
+	public static function can_seal() {
+		return '' !== self::seal_key() && function_exists( 'sodium_crypto_secretbox' );
+	}
+
+	/**
+	 * The key a secret is sealed with: ORDRYX_SECRET_KEY if wp-config.php
+	 * defines one (at least 32 characters: it outlives a change of
+	 * WordPress's own keys), else from WordPress's AUTH_KEY and
+	 * SECURE_AUTH_KEY there. Never from the database: WordPress keeps keys
+	 * there when wp-config.php has none, and a copy of the database would
+	 * hold them too. "" when there's no such key.
+	 *
+	 * @return string 32 bytes, or "".
+	 */
+	private static function seal_key() {
+		$ikm = '';
+		if ( defined( 'ORDRYX_SECRET_KEY' ) && is_string( ORDRYX_SECRET_KEY ) && strlen( ORDRYX_SECRET_KEY ) >= 32 ) {
+			$ikm = 'ORDRYX_SECRET_KEY=' . ORDRYX_SECRET_KEY;
+		} else {
+			foreach ( array( 'AUTH_KEY', 'SECURE_AUTH_KEY' ) as $name ) {
+				$value = defined( $name ) ? constant( $name ) : '';
+				if ( ! is_string( $value ) || strlen( $value ) < 32 || self::SAMPLE_KEY === $value ) {
+					return '';
+				}
+				$ikm .= $name . '=' . $value . "\n";
+			}
+		}
+		return hash_hkdf( 'sha256', $ikm, 32, 'ordryx_secret seal v1' );
+	}
+
+	/**
+	 * The secret sealed, as it's stored ("s1." and base64), or "".
+	 *
+	 * @param string $raw 32 bytes.
+	 * @return string
+	 */
+	private static function seal( $raw ) {
+		$key = self::seal_key();
+		if ( '' === $key || ! function_exists( 'sodium_crypto_secretbox' ) ) {
+			return '';
+		}
+		$nonce = random_bytes( 24 );
+		return self::SEALED . base64_encode( $nonce . sodium_crypto_secretbox( $raw, $nonce, $key ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- stored as text.
+	}
+
+	/**
+	 * A sealed secret opened, or "" (another key, or damaged).
+	 *
+	 * @param string $sealed What follows "s1.".
+	 * @return string
+	 */
+	private static function open( $sealed ) {
+		$key = self::seal_key();
+		$box = base64_decode( $sealed, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- stored as text.
+		if ( '' === $key || false === $box || strlen( $box ) !== 24 + 16 + 32 || ! function_exists( 'sodium_crypto_secretbox_open' ) ) {
+			return '';
+		}
+		try {
+			$raw = sodium_crypto_secretbox_open( substr( $box, 24 ), substr( $box, 0, 24 ), $key );
+		} catch ( \Throwable $e ) {
+			return '';
+		}
+		return ( is_string( $raw ) && 32 === strlen( $raw ) ) ? $raw : '';
 	}
 
 	/**
@@ -178,14 +285,19 @@ class Ordryx_State {
 	 *
 	 * @param string $store  The store's id on the account.
 	 * @param string $secret 32 random bytes, base64.
-	 * @return bool Whether both were well formed (nothing kept otherwise).
+	 * @return bool Whether both were well formed and the secret could be
+	 *              sealed (nothing kept otherwise: never in the clear).
 	 */
 	public static function keep_secret( $store, $secret ) {
 		$raw = is_string( $secret ) ? base64_decode( $secret, true ) : false; // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- the secret as the account gave it.
 		if ( ! is_string( $store ) || ! preg_match( self::ID, $store ) || false === $raw || 32 !== strlen( $raw ) ) {
 			return false;
 		}
-		update_option( self::SECRET, base64_encode( $raw ), false ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- stored as text.
+		$sealed = self::seal( $raw );
+		if ( '' === $sealed ) {
+			return false;
+		}
+		update_option( self::SECRET, $sealed, false );
 		self::update( array( 'store' => $store ) );
 		return true;
 	}

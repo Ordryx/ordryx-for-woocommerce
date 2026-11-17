@@ -28,6 +28,8 @@ class Ordryx_Admin {
 
 	const RESULTS = array(
 		'permalinks',
+		'keys',
+		'keys_changed',
 		'gone_nokey',
 		'gone_left',
 		'stood',
@@ -456,6 +458,10 @@ class Ordryx_Admin {
 				return __( 'That approval was for an earlier code. Type a new code from Ordryx to connect.', 'ordryx-for-woocommerce' );
 			case 'pairing':
 				return __( 'Ordryx hasn\'t received WooCommerce\'s key yet. Press Connect to try again.', 'ordryx-for-woocommerce' );
+			case 'keys':
+				return __( 'This site\'s wp-config.php has no security keys of its own (AUTH_KEY and SECURE_AUTH_KEY), so the plugin can\'t keep its connection secret encrypted. Add them (WordPress.org\'s secret-key service makes a set), then try again.', 'ordryx-for-woocommerce' );
+			case 'keys_changed':
+				return __( 'This site\'s security keys in wp-config.php changed, so the secret this store was connected with can\'t be read. Type a new code from Ordryx to connect again; it carries on from where it stopped.', 'ordryx-for-woocommerce' );
 			case 'unknown':
 				return __( 'Ordryx\'s server doesn\'t know this store any more, so nothing this plugin sends reaches an Ordryx. Type a new code from Ordryx to connect again; it carries on from where it stopped.', 'ordryx-for-woocommerce' );
 			case 'disconnected':
@@ -563,7 +569,8 @@ class Ordryx_Admin {
 				break;
 			default:
 				if ( 'unknown' === $state['phase'] ) {
-					echo '<div class="notice inline notice-warning"><p>' . esc_html( self::sentence( 'unknown' ) ) . '</p></div>';
+					$lost = Ordryx_State::secret_lost() ? 'keys_changed' : 'unknown';
+					echo '<div class="notice inline notice-warning"><p>' . esc_html( self::sentence( $lost ) ) . '</p></div>';
 				}
 				if ( '' !== $state['pending_code'] && $state['pending_until'] >= time() ) {
 					self::render_elsewhere( $state, $admin );

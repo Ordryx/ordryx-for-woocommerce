@@ -81,13 +81,17 @@ class Ordryx_Connection {
 	/**
 	 * Why this store can't connect now, before anything is asked.
 	 *
-	 * @return string "" when it can; else "https", "woocommerce" or
+	 * @return string "" when it can; else "https", "woocommerce",
 	 *                "permalinks" (with Plain permalinks, WooCommerce's Allow
-	 *                screen sends Approve to an address it doesn't answer).
+	 *                screen sends Approve to an address it doesn't answer) or
+	 *                "keys" (wp-config.php has no keys to seal the secret with).
 	 */
 	public static function refused() {
 		if ( 'https' !== wp_parse_url( home_url(), PHP_URL_SCHEME ) ) {
 			return 'https';
+		}
+		if ( ! Ordryx_State::can_seal() ) {
+			return 'keys';
 		}
 		if ( ! defined( 'WC_VERSION' ) || version_compare( WC_VERSION, ORDRYX_WC_AT_LEAST, '<' ) ) {
 			return 'woocommerce';
@@ -348,6 +352,12 @@ class Ordryx_Connection {
 		$why = Ordryx_Site::why();
 		if ( '' !== $why && ! ( $looking && 'address' === $why ) ) {
 			return 'copy'; // (the daily check, a nudge's or the Allow screen's, or a copy at the store's own address: nothing sent)
+		}
+		if ( Ordryx_State::secret_lost() ) {
+			// wp-config.php's keys changed since it was sealed: nothing can be
+			// signed, so nothing is asked; a new code connects again.
+			Ordryx_State::update( array( 'phase' => 'unknown' ) );
+			return 'unknown';
 		}
 		$before = self::moment();
 		$answer = Ordryx_Account::call( 'check', array(), Ordryx_Account::TIMEOUT, $looking );

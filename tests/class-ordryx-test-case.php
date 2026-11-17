@@ -43,6 +43,15 @@ abstract class Ordryx_Test_Case extends \PHPUnit\Framework\TestCase {
 	/** @var string What WordPress says this site is (wp_get_environment_type). */
 	protected $environment = 'production';
 
+	/**
+	 * Whether wp-config.php has keys of its own (AUTH_KEY, SECURE_AUTH_KEY),
+	 * as every installer writes. A class that sets it false runs each test in
+	 * a PHP of its own: constants, once defined, stay.
+	 *
+	 * @var bool
+	 */
+	protected $wp_config_keys = true;
+
 	/** @var bool Whether the person at the page is an Administrator. */
 	protected $admin = true;
 
@@ -80,6 +89,10 @@ abstract class Ordryx_Test_Case extends \PHPUnit\Framework\TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		Monkey\setUp();
+		if ( $this->wp_config_keys && ! defined( 'AUTH_KEY' ) ) {
+			define( 'AUTH_KEY', 'kR!7t]q2Zp#vN4e8Lw@1sX9bY6uC3mF0gH5jD^aQ&oI*lT(rE)yU-iO_pS+dV=cB' );
+			define( 'SECURE_AUTH_KEY', 'wE3$rT6yU9iO2pA5sD8fG1hJ4kL7zX0cV|bN@mQ!wE#rT%yU^iO&pA*sD(fG)hJ' );
+		}
 		$this->account   = new Fake_Account();
 		$this->wpdb      = new Fake_Wpdb();
 		$GLOBALS['wpdb'] = $this->wpdb;

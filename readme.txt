@@ -4,7 +4,7 @@ Tags: inventory, manufacturing, orders, stock, production
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.5.9
+Stable tag: 0.5.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,15 +85,22 @@ The plugin needs to reach account.ordryx.com over HTTPS, and Ordryx's server nee
 
 Yes: WooCommerce only gives out a key over HTTPS.
 
+= Where is the connection's secret kept? =
+
+In this site's database, encrypted with a key made from wp-config.php's AUTH_KEY and SECURE_AUTH_KEY, which every WordPress installer writes. Changing those keys (some security plugins do, after a scare) makes the secret unreadable: the Ordryx tab then asks for a new code from Ordryx, and the store carries on from where it stopped. To keep the connection through such a change, define your own key in wp-config.php, at least 32 random characters, before connecting: `define( 'ORDRYX_SECRET_KEY', '…' );`.
+
 = I made a copy of my site (a staging site, a host's one-click copy) =
 
-The copy holds the live store's connection too, so the plugin keeps the address it was connected at, and whether WordPress said it was a live site, and this plugin sends nothing from a copy to your Ordryx: order changes, erasures, switching the plugin off or deleting it on the copy leave the live store and your Ordryx as they are, and an order shipped from Ordryx marks nothing on the copy. The only thing a copy at another address asks is a check of where it stands, when an Administrator opens its Ordryx tab or presses Forget the connection here, and Ordryx's server refuses it, knowing the store's address. A copy of a store connected before 0.5.1, made before the store's first check on 0.5.1, doesn't know the store's address yet: its first call, whatever it is, goes to Ordryx's server, which refuses it and tells it the store's address. From then on it asks only that check. (One that WordPress calls staging, development or local sends nothing at all, even then.) A copy at the store's own address that WordPress calls staging (its environment type) asks nothing at all. That's what this plugin does on a copy: whoever holds a copy's database, or a backup of it, holds the store's secret too, and with it could ask what an Administrator can from the Ordryx tab, though never read an order or mark one shipped. Keep copies and backups as safe as the live site.
+The copy holds the live store's connection too, so the plugin keeps the address it was connected at, and whether WordPress said it was a live site, and this plugin sends nothing from a copy to your Ordryx: order changes, erasures, switching the plugin off or deleting it on the copy leave the live store and your Ordryx as they are, and an order shipped from Ordryx marks nothing on the copy. The only thing a copy at another address asks is a check of where it stands, when an Administrator opens its Ordryx tab or presses Forget the connection here, and Ordryx's server refuses it, knowing the store's address. A copy of a store connected before 0.5.1, made before the store's first check on 0.5.1, doesn't know the store's address yet: its first call, whatever it is, goes to Ordryx's server, which refuses it and tells it the store's address. From then on it asks only that check. (One that WordPress calls staging, development or local sends nothing at all, even then.) A copy at the store's own address that WordPress calls staging (its environment type) asks nothing at all. That's what this plugin does on a copy. The store's secret is kept encrypted with a key from wp-config.php, so a copy of the database alone, or a backup of it, can't use it. A copy of the whole site, wp-config.php with it, holds the secret too, and with it could ask what an Administrator can from the Ordryx tab, though never read an order or mark one shipped. Keep copies and backups as safe as the live site.
 
 The copy's Ordryx tab says it looks like a copy. There's nothing to do. If you'll push the copy back over the live site, leave the connection as it is. To connect a copy at another address to an Ordryx of its own instead, press Forget the connection here, which clears the connection on the copy only, then type a code from that Ordryx. A copy at the store's own address can't connect to an Ordryx of its own until it has an address of its own. There, Forget the connection here only stops it holding the live store's connection: worth doing before anyone sets its environment type back to production.
 
 A copy that keeps the live store's own address, and that WordPress still calls a live site (its environment type), can't be told apart: one on your computer reached through a hosts-file entry, say. Clear its connection first with WP-CLI, `wp option delete ordryx_state ordryx_secret`. If the store itself moved to a new address, its Ordryx tab says what to do.
 
 == Changelog ==
+
+= 0.5.10 =
+* The connection's secret is kept encrypted, with a key from this site's wp-config.php (its AUTH_KEY and SECURE_AUTH_KEY, or ORDRYX_SECRET_KEY if you define one), so a copy of the database alone can't sign for the store. A secret kept by an earlier version is encrypted the first time it's used. A site whose wp-config.php has no keys of its own can't connect until it has them. If those keys change, the tab asks for a new code from Ordryx; the store carries on from where it stopped.
 
 = 0.5.9 =
 * A code that's wrong, has run out or was already used is said as such, and the tab says where to get a new one in Ordryx (Sales › Sales channels › WooCommerce).
