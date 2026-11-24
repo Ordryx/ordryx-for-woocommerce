@@ -1,6 +1,6 @@
 <?php
 /**
- * A customer's data erased in WordPress (A1): the orders WooCommerce erased
+ * A customer's data erased in WordPress: the orders WooCommerce erased
  * are told to the store's Ordryx, by id only, until it has them.
  *
  * @package Ordryx

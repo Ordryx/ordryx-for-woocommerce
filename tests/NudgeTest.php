@@ -160,7 +160,7 @@ class NudgeTest extends Ordryx_Test_Case {
 	}
 
 	public function test_nudges_never_pile_up_while_one_runs() {
-		// (round 2: a running one answered "next scheduled" with true)
+		// (a running one answered "next scheduled" with true)
 		$this->connected();
 		$this->running['ordryx_nudge'] = true;
 		Ordryx_Nudge::changed();

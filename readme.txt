@@ -4,7 +4,7 @@ Tags: inventory, manufacturing, orders, stock, production
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.5.10
+Stable tag: 0.5.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,9 +12,9 @@ Connects your store to Ordryx: its orders flow in to plan, make and ship them, a
 
 == Description ==
 
-Ordryx is inventory and production for small makers: what's on the shelf, what to make next, and what to ship. This plugin connects a WooCommerce store to the shop's own Ordryx with one code. Your Ordryx is your shop's own: it runs on a computer of yours, or on Ordryx's servers when Ordryx hosts it for you.
+Ordryx is inventory and production for small makers: what's on the shelf, what to make next, and what to ship. This plugin connects a WooCommerce store to the shop's own Ordryx with one code. It needs an Ordryx (ordryx.com). Your Ordryx is your shop's own.
 
-* **One code, then WooCommerce's own Allow screen.** Get a code in Ordryx (Sales › Sales channels › WooCommerce), type it under WooCommerce › Settings › Ordryx, tick that you agree to Ordryx's terms of service and privacy policy, check both names, press Connect and allow a **read-only** key.
+* **One code, then WooCommerce's own Allow screen.** Get a code in Ordryx (Sales › Stores › WooCommerce), type it under WooCommerce › Settings › Ordryx, tick that you agree to Ordryx's terms of service and privacy policy, check both names, press Connect and allow a **read-only** key.
 * **Orders come in by themselves.** Once your Ordryx has run the store's first sync (Sync now on the store's page in Ordryx, once its starting stock is set) and "Sync orders automatically" is on there (Settings › WooCommerce), it reads the store as often as you chose, and usually within a couple of minutes of an order changing: the plugin tells Ordryx's server that something changed, a notice that carries no order details at all. Until then, orders come in when someone presses Sync now (the first time, in Ordryx).
 * **Payment processors' fees, and paid.** Ordryx's key sees two extra fields on each order: the fee WooPayments or Stripe charged, so Ordryx can show what each sale really made, and whether WooCommerce counts the order paid (a status another plugin adds to WooCommerce's paid ones, like "Packing", counts too).
 * **Shipped from Ordryx.** An order you ship in Ordryx is marked Completed here, with its tracking (in WooCommerce's Fulfillments, Shipment Tracking or Advanced Shipment Tracking if you use one, else a note to the customer) and a private note saying who shipped it. Only a tracking number (letters and digits, its spaces taken out: at most 6 letters, or one with a dash, which goes only between digits), a carrier's plain name and a link to that carrier's own tracking page reach the customer. WooCommerce then does what it does for any order marked Completed: it emails the customer (and for the note, when tracking goes there), and does more for an order not yet paid (see the FAQ). This plugin writes it, never Ordryx's key, which stays read-only.
@@ -87,7 +87,7 @@ Yes: WooCommerce only gives out a key over HTTPS.
 
 = Where is the connection's secret kept? =
 
-In this site's database, encrypted with a key made from wp-config.php's AUTH_KEY and SECURE_AUTH_KEY, which every WordPress installer writes. Changing those keys (some security plugins do, after a scare) makes the secret unreadable: the Ordryx tab then asks for a new code from Ordryx, and the store carries on from where it stopped. To keep the connection through such a change, define your own key in wp-config.php, at least 32 random characters, before connecting: `define( 'ORDRYX_SECRET_KEY', '…' );`.
+In this site's database, encrypted with a key made from wp-config.php's AUTH_KEY and SECURE_AUTH_KEY, which every WordPress installer writes. Changing those keys (some security plugins do, after a scare) makes the secret unreadable: the Ordryx tab then asks for a new code from Ordryx, and the store carries on from where it stopped. To keep the connection through such a change, define your own key in wp-config.php, at least 32 random characters, before connecting: `define( 'ORDRYX_SECRET_KEY', '…' );`. A store connected before 0.5.10 on a site whose wp-config.php has no AUTH_KEY and SECURE_AUTH_KEY of its own keeps its secret unencrypted until they're added; the Ordryx tab says so.
 
 = I made a copy of my site (a staging site, a host's one-click copy) =
 
@@ -99,8 +99,13 @@ A copy that keeps the live store's own address, and that WordPress still calls a
 
 == Changelog ==
 
+= 0.5.11 =
+* A store connected before 0.5.10 on a site whose wp-config.php has no security keys of its own keeps its secret unencrypted until the keys are added: the Ordryx tab now says so on a connected store, and how to put it right.
+* If wp-config.php's keys change, an order shipped from Ordryx is no longer refused as if the store weren't connected: Ordryx is told the connection needs a new code, says so on the order, and marks the order shipped here once the store is connected again.
+* The tab and this page name the store's place in Ordryx as it's called there now: Sales › Stores.
+
 = 0.5.10 =
-* The connection's secret is kept encrypted, with a key from this site's wp-config.php (its AUTH_KEY and SECURE_AUTH_KEY, or ORDRYX_SECRET_KEY if you define one), so a copy of the database alone can't sign for the store. A secret kept by an earlier version is encrypted the first time it's used. A site whose wp-config.php has no keys of its own can't connect until it has them. If those keys change, the tab asks for a new code from Ordryx; the store carries on from where it stopped.
+* The connection's secret is kept encrypted, with a key from this site's wp-config.php (its AUTH_KEY and SECURE_AUTH_KEY, or ORDRYX_SECRET_KEY if you define one), so a copy of the database alone can't sign for the store. A secret kept by an earlier version is encrypted the first time it's used, on a site whose wp-config.php has keys of its own; on a site without them it stays unencrypted until they're added. A site whose wp-config.php has no keys of its own can't connect until it has them. If those keys change, the tab asks for a new code from Ordryx; the store carries on from where it stopped.
 
 = 0.5.9 =
 * A code that's wrong, has run out or was already used is said as such, and the tab says where to get a new one in Ordryx (Sales › Sales channels › WooCommerce).

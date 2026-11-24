@@ -37,4 +37,12 @@ class NoKeysTest extends Ordryx_Test_Case {
 		$this->assertSame( str_repeat( 'z', 32 ), Ordryx_State::secret() );
 		$this->assertFalse( Ordryx_State::secret_lost() );
 	}
+
+	public function test_a_connected_stores_tab_says_its_secret_is_kept_unencrypted() {
+		$this->connected(); // (as 0.5.9 left it: in the clear)
+		$this->assertTrue( Ordryx_State::secret_plain() );
+		$html = str_replace( '&#039;', "'", $this->printed( array( 'Ordryx_Admin', 'render' ) ) );
+		$this->assertStringContainsString( "This store's connection secret is still kept in the database unencrypted", $html );
+		$this->assertSame( base64_encode( $this->account->secret ), $this->options[ Ordryx_State::SECRET ] );
+	}
 }

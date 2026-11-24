@@ -210,6 +210,18 @@ class Ordryx_State {
 	}
 
 	/**
+	 * Whether the secret is still kept in the clear: one from 0.5.9 or
+	 * earlier on a site that can't seal it (can_seal), since anywhere else
+	 * the first read seals it.
+	 *
+	 * @return bool
+	 */
+	public static function secret_plain() {
+		$kept = get_option( self::SECRET, '' );
+		return is_string( $kept ) && '' !== $kept && 0 !== strpos( $kept, self::SEALED ) && ! self::can_seal();
+	}
+
+	/**
 	 * Whether a secret can be kept sealed here (wp-config.php has keys of its
 	 * own, and libsodium is there: it is in every WordPress since 5.2).
 	 *

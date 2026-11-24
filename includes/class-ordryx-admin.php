@@ -410,7 +410,7 @@ class Ordryx_Admin {
 			case 'format':
 				return __( 'A code is eight letters and numbers, like R7WT-4HQN.', 'ordryx-for-woocommerce' );
 			case 'code':
-				return __( 'That code isn\'t right, or has run out or been used. Get a new one in Ordryx (Sales › Sales channels › WooCommerce) and type it here. Codes last 10 minutes and work once.', 'ordryx-for-woocommerce' );
+				return __( 'That code isn\'t right, or has run out or been used. Get a new one in Ordryx (Sales › Stores › WooCommerce) and type it here. Codes last 10 minutes and work once.', 'ordryx-for-woocommerce' );
 			case 'agree':
 				return __( 'Tick the box to agree to Ordryx\'s terms of service and privacy policy, then press Continue.', 'ordryx-for-woocommerce' );
 			case 'move_agree':
@@ -420,7 +420,7 @@ class Ordryx_Admin {
 			case 'tries':
 				return __( 'Too many wrong codes for this store. Wait 10 minutes, then type the code from Ordryx again.', 'ordryx-for-woocommerce' );
 			case 'paused':
-				return __( 'That Ordryx has WooCommerce paused. Resume it in Ordryx (Sales › Sales channels), then make a new code.', 'ordryx-for-woocommerce' );
+				return __( 'That Ordryx has WooCommerce paused. Resume it in Ordryx (Sales › Stores), then make a new code.', 'ordryx-for-woocommerce' );
 			case 'unlinked':
 				return __( 'Your Ordryx isn\'t in touch with Ordryx\'s server right now, so nothing changed. Check that it\'s running and online, then try again.', 'ordryx-for-woocommerce' );
 			case 'slow':
@@ -460,6 +460,8 @@ class Ordryx_Admin {
 				return __( 'Ordryx hasn\'t received WooCommerce\'s key yet. Press Connect to try again.', 'ordryx-for-woocommerce' );
 			case 'keys':
 				return __( 'This site\'s wp-config.php has no security keys of its own (AUTH_KEY and SECURE_AUTH_KEY), so the plugin can\'t keep its connection secret encrypted. Add them (WordPress.org\'s secret-key service makes a set), then try again.', 'ordryx-for-woocommerce' );
+			case 'keys_plain':
+				return __( 'This store\'s connection secret is still kept in the database unencrypted, as it was before version 0.5.10, because this site can\'t encrypt it: that needs security keys of its own in wp-config.php (AUTH_KEY and SECURE_AUTH_KEY) and PHP\'s libsodium, part of every WordPress since 5.2. Add the keys if they\'re missing (WordPress.org\'s secret-key service makes a set): the secret is encrypted the next time it\'s used, and the store stays connected.', 'ordryx-for-woocommerce' );
 			case 'keys_changed':
 				return __( 'This site\'s security keys in wp-config.php changed, so the secret this store was connected with can\'t be read. Type a new code from Ordryx to connect again; it carries on from where it stopped.', 'ordryx-for-woocommerce' );
 			case 'unknown':
@@ -473,7 +475,7 @@ class Ordryx_Admin {
 			case 'gone':
 				return __( 'Disconnected. Ordryx\'s key is deleted from this store.', 'ordryx-for-woocommerce' );
 			case 'refused':
-				return __( 'Your Ordryx didn\'t accept that. Check in Ordryx (Sales › Sales channels), then try again.', 'ordryx-for-woocommerce' );
+				return __( 'Your Ordryx didn\'t accept that. Check in Ordryx (Sales › Stores), then try again.', 'ordryx-for-woocommerce' );
 			case 'unanswered':
 				return __( 'Your Ordryx didn\'t answer in time, so WooCommerce\'s key went nowhere. Check that it\'s running and online, then type a new code from Ordryx.', 'ordryx-for-woocommerce' );
 			case 'silent':
@@ -489,15 +491,15 @@ class Ordryx_Admin {
 			case 'flows':
 				return __( 'Saved. It takes effect at the next sync.', 'ordryx-for-woocommerce' );
 			case 'first_sync':
-				return __( 'This store\'s first sync is run in Ordryx, once its starting stock is set: open Ordryx and press Sync now on the store\'s page (Sales › Sales channels).', 'ordryx-for-woocommerce' );
+				return __( 'This store\'s first sync is run in Ordryx, once its starting stock is set: open Ordryx and press Sync now on the store\'s page (Sales › Stores).', 'ordryx-for-woocommerce' );
 			case 'running':
 				return __( 'A sync is running already: what it finds reaches your Ordryx within a minute.', 'ordryx-for-woocommerce' );
 			case 'sync_paused':
 				return __( 'Ordryx is paused for this store. Resume it first, then sync.', 'ordryx-for-woocommerce' );
 			case 'key_check':
-				return __( 'Check that the key shown here matches the one on your Ordryx\'s WooCommerce page (Sales › Sales channels › WooCommerce), tick that it does, then press Connect. If it doesn\'t match, press Cancel.', 'ordryx-for-woocommerce' );
+				return __( 'Check that the key shown here matches the one on your Ordryx\'s WooCommerce page (Sales › Stores › WooCommerce), tick that it does, then press Connect. If it doesn\'t match, press Cancel.', 'ordryx-for-woocommerce' );
 			case 'unreadable':
-				return __( 'Your Ordryx can\'t read this store just now, so nothing was synced. Check the store\'s page in Ordryx (Sales › Sales channels).', 'ordryx-for-woocommerce' );
+				return __( 'Your Ordryx can\'t read this store just now, so nothing was synced. Check the store\'s page in Ordryx (Sales › Stores).', 'ordryx-for-woocommerce' );
 			case 'clock':
 				return __( 'Your Ordryx couldn\'t ask this store the time just now, and a change is timed by the store\'s clock: nothing changed. Try again in a moment.', 'ordryx-for-woocommerce' );
 			case 'forgot':
@@ -565,6 +567,10 @@ class Ordryx_Admin {
 				break;
 			case 'connected':
 			case 'paused':
+				if ( Ordryx_State::secret_plain() ) {
+					// (connected before 0.5.10 on a site with no keys: said, never silent)
+					echo '<div class="notice inline notice-warning"><p>' . esc_html( self::sentence( 'keys_plain' ) ) . '</p></div>';
+				}
 				self::render_connected( $state, $admin, $look );
 				break;
 			default:
@@ -615,7 +621,7 @@ class Ordryx_Admin {
 		echo '<p class="ordryx-muted">';
 		printf(
 			/* translators: %s: an example code */
-			esc_html__( 'Get it in Ordryx: Sales › Sales channels › WooCommerce, Get a code. It looks like %s.', 'ordryx-for-woocommerce' ),
+			esc_html__( 'Get it in Ordryx: Sales › Stores › WooCommerce, Get a code. It looks like %s.', 'ordryx-for-woocommerce' ),
 			'<code>R7WT-4HQN</code>'
 		);
 		echo '</p>';
@@ -705,7 +711,7 @@ class Ordryx_Admin {
 			self::form( 'allow' );
 			echo '<input type="hidden" name="shown" value="' . esc_attr( Ordryx_Shipped::fingerprint( $key ) ) . '">';
 			echo '<p class="ordryx-key">' . esc_html__( 'Your Ordryx\'s key', 'ordryx-for-woocommerce' ) . ' <code>' . esc_html( Ordryx_Shipped::fingerprint( $key ) ) . '</code></p>';
-			echo '<p><label><input type="checkbox" name="key_ok" value="1" required> ' . esc_html__( 'It matches the key on my Ordryx\'s WooCommerce page (Sales › Sales channels › WooCommerce)', 'ordryx-for-woocommerce' ) . '</label></p>';
+			echo '<p><label><input type="checkbox" name="key_ok" value="1" required> ' . esc_html__( 'It matches the key on my Ordryx\'s WooCommerce page (Sales › Stores › WooCommerce)', 'ordryx-for-woocommerce' ) . '</label></p>';
 			echo '<p><button type="submit" class="button button-primary">' . esc_html__( 'Connect', 'ordryx-for-woocommerce' ) . '</button></p></form>';
 		} elseif ( $admin && '' !== $allow ) {
 			echo '<a class="button button-primary" href="' . esc_url( $allow ) . '">' . esc_html__( 'Connect', 'ordryx-for-woocommerce' ) . '</a>';
@@ -1031,7 +1037,7 @@ class Ordryx_Admin {
 			echo '<p>';
 			printf(
 				/* translators: 1: this site's address, 2: the address the store was connected at */
-				esc_html__( 'If the store itself moved to %1$s: in its Ordryx, open Sales › Sales channels › WooCommerce, press The store moved… and type %1$s. Then forget the connection here and type the code Ordryx gives. Once Ordryx finds the store\'s orders here as they were, it carries on at this address and lets %2$s go. Don\'t disconnect %2$s in Ordryx first.', 'ordryx-for-woocommerce' ),
+				esc_html__( 'If the store itself moved to %1$s: in its Ordryx, open Sales › Stores › WooCommerce, press The store moved… and type %1$s. Then forget the connection here and type the code Ordryx gives. Once Ordryx finds the store\'s orders here as they were, it carries on at this address and lets %2$s go. Don\'t disconnect %2$s in Ordryx first.', 'ordryx-for-woocommerce' ),
 				'<code>' . esc_html( Ordryx_Site::home() ) . '</code>',
 				'<code>' . esc_html( $paired ) . '</code>'
 			);

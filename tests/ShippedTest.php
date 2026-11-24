@@ -156,6 +156,23 @@ class ShippedTest extends Ordryx_Test_Case {
 		$this->assertSame( 'paused', Ordryx_State::phase() ); // (never moved by the message itself)
 	}
 
+	public function test_a_secret_that_cant_be_opened_marks_nothing_and_is_told_again_later() {
+		// (wp-config.php's keys changed since it was sealed: no signature can
+		// be checked, but the store isn't gone, and the tab asks for a new code)
+		$key   = hash_hkdf( 'sha256', 'AUTH_KEY=' . str_repeat( 'a', 64 ) . "\nSECURE_AUTH_KEY=" . str_repeat( 'b', 64 ) . "\n", 32, 'ordryx_secret seal v1' );
+		$nonce = random_bytes( 24 );
+		$this->options[ Ordryx_State::SECRET ] = 's1.' . base64_encode( $nonce . sodium_crypto_secretbox( $this->account->secret, $nonce, $key ) );
+		$this->assertTrue( Ordryx_State::secret_lost() );
+		$this->assertSame( array( 409, array( 'result' => 'nosecret' ) ), $this->relay( $this->message() ) );
+		$this->assertSame( 'processing', $this->orders[4211]->status );
+		$this->assertSame( array(), $this->orders[4211]->notes );
+		// another store's address is still not this store, whatever the secret
+		$this->assertSame( array( 404, array( 'result' => 'store' ) ), $this->relay( $this->message(), array( 'store' => 'st_other' ) ) );
+		// and with no secret kept at all, the store isn't connected
+		unset( $this->options[ Ordryx_State::SECRET ] );
+		$this->assertSame( array( 404, array( 'result' => 'store' ) ), $this->relay( $this->message() ) );
+	}
+
 	public function test_a_deleted_ordryx_key_marks_nothing_and_is_told_again_later() {
 		// (the tab says nothing flows once the shop deletes Ordryx's key)
 		$this->assertSame( 200, $this->relay( $this->message() )[0] );
@@ -274,7 +291,7 @@ class ShippedTest extends Ordryx_Test_Case {
 		$this->assertSame( $at, $got[0][4] ); // (Unix seconds, as its own docs take it)
 		$this->assertSame( array(), $this->orders[4211]->notes ); // (no note when a tracking plugin has it)
 		// a number reaches it with its spaces taken out, words
-		// sent with one never (round 2)
+		// sent with one never
 		$this->orders[4212]        = new WC_Order( array(), 'USD', 4212, 'processing' );
 		$this->orders[4212]->items = array( 501 => 2 );
 		$this->relay( $this->message( array( 'shipment' => str_repeat( 'b', 32 ), 'order' => 4212, 'carrier' => 'UPS', 'tracking' => '1Z 999 AA1 0123 4567 84', 'url' => '' ) ) );
@@ -491,8 +508,8 @@ class ShippedTest extends Ordryx_Test_Case {
 
 	public function test_words_sent_as_a_tracking_number_never_reach_the_customer() {
 		// (words, digits and dashes passed, spaces and all;
-		// round 2: joined by dashes, with the spaces taken out, they still read
-		// as a sentence; round 3: a short word and a phone number, a dash
+		// joined by dashes, with the spaces taken out, they still read
+		// as a sentence; so do a short word and a phone number, a dash
 		// between every two digits, still passed)
 		$id = 4211;
 		foreach ( array( 'CALL 1-800-555-0100 TO PAY DUTY NOW', 'CALL-1-800-555-0100-TO-PAY-DUTY', 'PAY-DUTY-AT-18005550100', 'PAY-DUTY-NOW', 'CALL 1-800-555-0100', 'TEXT1-888-555-0199' ) as $n => $typed ) {

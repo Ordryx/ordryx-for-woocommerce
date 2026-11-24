@@ -4,7 +4,7 @@
  * Plugin URI:           https://ordryx.com/woocommerce
  * Update URI:           https://ordryx.com/woocommerce
  * Description:          Connects this store to its Ordryx: orders flow in, with a read-only key, to plan, make and ship them, and orders shipped in Ordryx are marked shipped here.
- * Version:              0.5.10
+ * Version:              0.5.11
  * Author:               Ordryx
  * Author URI:           https://ordryx.com
  * License:              GPL-2.0-or-later
@@ -21,7 +21,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ORDRYX_VERSION', '0.5.10' );
+define( 'ORDRYX_VERSION', '0.5.11' );
 define( 'ORDRYX_FILE', __FILE__ );
 define( 'ORDRYX_WC_AT_LEAST', '11.1' );
 

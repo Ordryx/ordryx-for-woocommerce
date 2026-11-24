@@ -35,7 +35,9 @@ defined( 'ABSPATH' ) || exit;
  * Pause is Ordryx's: it never sends one while it's paused, and the message is
  * signed by its own key, so this plugin's own phase (which follows Ordryx's
  * only when the tab or a nudge asks) never refuses one. Ordryx's key deleted
- * in WooCommerce does ("nokey"): the tab says nothing flows then.
+ * in WooCommerce does ("nokey"): the tab says nothing flows then. So does a
+ * secret this site can't open any more ("nosecret": wp-config.php's keys
+ * changed), until the store is connected again with a new code.
  *
  * Only a tracking number (its spaces taken out: letters and digits, 40 at
  * most, a digit among them and 6 letters at most, a dash only between two
@@ -128,8 +130,15 @@ class Ordryx_Shipped {
 		$state  = Ordryx_State::get();
 		$secret = Ordryx_State::secret();
 		$no     = array( 401, array( 'error' => 'signature' ) );
-		if ( '' === $secret || '' === $state['store'] || ! hash_equals( $state['store'], $store ) ) {
+		if ( '' === $state['store'] || ! hash_equals( $state['store'], $store ) ) {
 			return array( 404, array( 'result' => 'store' ) );
+		}
+		if ( '' === $secret ) {
+			// A secret that's kept but can't be opened (wp-config.php's keys
+			// changed) can check no signature, so nothing is done; but the
+			// store isn't gone: the tab asks for a new code, and it's told
+			// again once the store is connected again.
+			return Ordryx_State::secret_lost() ? array( 409, array( 'result' => 'nosecret' ) ) : array( 404, array( 'result' => 'store' ) );
 		}
 		if ( ! preg_match( '/^\d{1,12}$/D', $sent ) || strlen( $raw ) > self::MOST * 2 ) {
 			return $no;

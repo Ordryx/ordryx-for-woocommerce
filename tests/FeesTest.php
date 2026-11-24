@@ -93,7 +93,7 @@ class FeesTest extends Ordryx_Test_Case {
 	}
 
 	public function test_the_key_is_read_the_way_woocommerce_reads_it() {
-		// (the query's first, else Basic auth's with its secret: round 2)
+		// (the query's first, else Basic auth's with its secret)
 		$key = $this->connected();
 		$_GET['consumer_key']    = $key;
 		$_GET['consumer_secret'] = 'cs_secret';

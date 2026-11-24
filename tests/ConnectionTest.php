@@ -113,7 +113,7 @@ class ConnectionTest extends Ordryx_Test_Case {
 	}
 
 	public function test_a_check_answered_after_a_disconnect_changes_nothing() {
-		// (round 2: the answer came back onto a forgotten connection)
+		// (the answer came back onto a forgotten connection)
 		$this->connected();
 		\Brain\Monkey\Functions\when( 'wp_remote_post' )->alias(
 			function ( $url, $args ) {
@@ -196,7 +196,7 @@ class ConnectionTest extends Ordryx_Test_Case {
 	}
 
 	public function test_deleting_the_plugin_deletes_the_key_before_telling_ordryx() {
-		// (round 3: the Ordryx believes "gone" only once the store refuses its key)
+		// (the Ordryx believes "gone" only once the store refuses its key)
 		$this->connected();
 		$key_then = null;
 		\Brain\Monkey\Functions\when( 'wp_remote_post' )->alias(

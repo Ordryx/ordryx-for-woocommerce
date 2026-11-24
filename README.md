@@ -6,7 +6,7 @@ ship them, and orders shipped in Ordryx are marked shipped in the store.
 
 - **To install it,** download the newest zip from
   [ordryx.com/woocommerce](https://ordryx.com/woocommerce) (or from Ordryx:
-  Sales › Sales channels › WooCommerce) and upload it under Plugins › Add
+  Sales › Stores › WooCommerce) and upload it under Plugins › Add
   Plugin › Upload Plugin. That page also says how to update it and connect
   the store.
 - **What it does, what it sends and when:** [readme.txt](readme.txt), the

@@ -178,7 +178,7 @@ class PairingTest extends Ordryx_Test_Case {
 	}
 
 	public function test_a_key_allowed_but_not_yet_confirmed_is_still_tracked() {
-		// (round 2: an Allow whose check didn't answer, then Cancel)
+		// (an Allow whose check didn't answer, then Cancel)
 		$this->account->will( self::PAIR, 200, $this->account->paired() );
 		Ordryx_Connection::pair( 'R7WT-4HQN', true );
 		$this->wpdb->add_key( 15, 'ck_' . str_repeat( 'b', 40 ) );
