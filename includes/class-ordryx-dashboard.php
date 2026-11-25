@@ -335,10 +335,10 @@ class Ordryx_Dashboard {
 			$names
 				? sprintf(
 					/* translators: %s: the order statuses that mean shipped, as a list */
-					__( 'Stock leaves Ordryx only when an order is marked %s. A cancelled order stops counting toward the plan; a refund never puts stock back by itself.', 'ordryx-for-woocommerce' ),
+					__( 'Stock leaves Ordryx only when an order is marked %s. A canceled order stops counting toward the plan; a refund never puts stock back by itself.', 'ordryx-for-woocommerce' ),
 					implode( __( ' or ', 'ordryx-for-woocommerce' ), $names )
 				)
-				: __( 'Stock leaves Ordryx only when an order is marked Completed, or another status picked in Ordryx as shipped. A cancelled order stops counting toward the plan; a refund never puts stock back by itself.', 'ordryx-for-woocommerce' )
+				: __( 'Stock leaves Ordryx only when an order is marked Completed, or another status picked in Ordryx as shipped. A canceled order stops counting toward the plan; a refund never puts stock back by itself.', 'ordryx-for-woocommerce' )
 		) . '</p>';
 		echo '<p class="ordryx-muted">' . esc_html__( 'WooCommerce keeps one stock count per product, so Ordryx takes it from its main location.', 'ordryx-for-woocommerce' ) . '</p>';
 		if ( $admin && '' !== $address ) {

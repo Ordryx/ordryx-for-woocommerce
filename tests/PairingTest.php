@@ -195,7 +195,7 @@ class PairingTest extends Ordryx_Test_Case {
 		$this->wpdb->add_key( 12, 'ck_' . str_repeat( 'b', 40 ) );
 		$this->account->will( '/api/woocommerce/v1/plugin/cancel', 409, array( 'error' => 'connected' ) );
 		$this->account->will( '/api/woocommerce/v1/plugin/check', 200, array( 'state' => 'connected', 'key_id' => 12 ) );
-		// (never "Cancelled. Nothing was connected.")
+		// (never "Canceled. Nothing was connected.")
 		$this->assertSame( 'stood', Ordryx_Connection::cancel() );
 		$this->assertSame( 'connected', Ordryx_State::phase() );
 		$this->assertSame( 12, Ordryx_State::get()['key_id'] );

@@ -469,7 +469,7 @@ class Ordryx_Admin {
 			case 'disconnected':
 				return __( 'This store isn\'t connected to an Ordryx.', 'ordryx-for-woocommerce' );
 			case 'cancelled':
-				return __( 'Cancelled. Nothing was connected.', 'ordryx-for-woocommerce' );
+				return __( 'Canceled. Nothing was connected.', 'ordryx-for-woocommerce' );
 			case 'resumed':
 				return __( 'Resumed. Orders flow to Ordryx again from now.', 'ordryx-for-woocommerce' );
 			case 'gone':
@@ -487,7 +487,7 @@ class Ordryx_Admin {
 			case 'synced':
 				return __( 'Syncing now: what it finds reaches your Ordryx within a minute.', 'ordryx-for-woocommerce' );
 			case 'paused_now':
-				return __( 'Paused. Nothing flows to Ordryx until you resume; what ships or is cancelled meanwhile moves no stock there.', 'ordryx-for-woocommerce' );
+				return __( 'Paused. Nothing flows to Ordryx until you resume; what ships or is canceled meanwhile moves no stock there.', 'ordryx-for-woocommerce' );
 			case 'flows':
 				return __( 'Saved. It takes effect at the next sync.', 'ordryx-for-woocommerce' );
 			case 'first_sync':
@@ -815,7 +815,7 @@ class Ordryx_Admin {
 					__( 'Ordryx was paused when this plugin was switched off (%s). Orders placed while paused won\'t take stock in Ordryx. Resume when you\'re ready.', 'ordryx-for-woocommerce' ),
 					self::when( $state['off_since'] )
 				)
-				: __( 'Paused, as if disconnected. Nothing flows. What ships or is cancelled meanwhile moves no stock in Ordryx; when you resume, it carries on from there.', 'ordryx-for-woocommerce' );
+				: __( 'Paused, as if disconnected. Nothing flows. What ships or is canceled meanwhile moves no stock in Ordryx; when you resume, it carries on from there.', 'ordryx-for-woocommerce' );
 			echo '<div class="notice inline notice-warning"><p>' . esc_html( $text ) . '</p></div>';
 		}
 		echo '<div class="ordryx-grid"><div class="ordryx-main">';
@@ -1090,7 +1090,7 @@ class Ordryx_Admin {
 		echo '<p>' . esc_html__( 'For orders waiting to ship, the ship-to name, address and phone, to buy labels. Cleared 90 days after each order is done (or, for one still open, after 90 days with nothing changed), or at once when WooCommerce erases a customer\'s data from their orders.', 'ordryx-for-woocommerce' ) . '</p>';
 		echo '<p>' . esc_html__( 'Who bought each order: the customer\'s name and email, kept with the order, and forgotten when WooCommerce erases them from it (WooCommerce › Settings › Accounts & Privacy: removing personal data from orders, on request or after a while).', 'ordryx-for-woocommerce' ) . '</p>';
 		echo '<p>' . esc_html__( 'What the customer typed or chose for each line, as WooCommerce\'s own order screen shows it under the line: a product add-on\'s field (the text to engrave, say) and a variation\'s options, never the hidden details kept there. Kept with the order\'s lines, and forgotten with the customer\'s name and email.', 'ordryx-for-woocommerce' ) . '</p>';
-		echo '<p>' . esc_html__( 'Once the store is disconnected (Disconnect here or in Ordryx, deleting this plugin, or connecting the store to another Ordryx), your Ordryx keeps its orders, as your shop\'s sales, but their ship-to, the customer\'s name and email and what they typed for a line go: at once for orders still waiting to ship, 29 days later for the rest, unless the store is connected to it again first.', 'ordryx-for-woocommerce' ) . '</p>';
+		echo '<p>' . esc_html__( 'Once the store is disconnected (Disconnect here or in Ordryx, deleting this plugin, or connecting the store to another Ordryx), your Ordryx keeps its orders, as your business\'s sales, but their ship-to, the customer\'s name and email and what they typed for a line go: at once for orders still waiting to ship, 29 days later for the rest, unless the store is connected to it again first.', 'ordryx-for-woocommerce' ) . '</p>';
 		echo '<p>' . esc_html__( 'Never the billing address or billing phone, and never customer accounts. WooCommerce\'s key could read them; Ordryx never asks for them.', 'ordryx-for-woocommerce' ) . '</p>';
 		echo '</section>';
 	}
